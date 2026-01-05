@@ -27,10 +27,10 @@ class CloudTrailClient:
         try: 
             #Query to CloudTrail
             response = self.client.lookup_events(
-                LookUpAttributes = [
+                LookupAttributes = [
                     {
                         'AttributeKey': 'ResourceName',
-                        'AttributeValue': resource_id
+                        'AttributeValue': resouce_id
                     }
                 ],
                 StartTime = start_time,
@@ -65,3 +65,9 @@ class CloudTrailClient:
             "user_agent": event.get('UserAgent', 'Unknown'),
             "event_id": event['EventId']
         }
+
+EVENT_MAPPINGS = {
+    "ec2": ["RunInstances", "CreateInstance"],
+    "rds": ["CreateDBInstance", "CreateDBCluster"],
+    "s3": ["CreateBucket"]
+}

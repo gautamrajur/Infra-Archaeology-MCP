@@ -5,7 +5,7 @@ from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import Tool, TextContent
 
-from infra_archaeology.tools.creator_lookup import who_created_resource
+from infra_archaeology_mcp.tools.creator_lookup import who_created_resource
 
 app = Server("infrastructure-archaeology")
 
@@ -13,7 +13,7 @@ app = Server("infrastructure-archaeology")
 async def list_tools() -> list[Tool]:
     return [
         Tool(
-            name="who_create_resource",
+            name="who_created_resource",
             desciption="Find who created a cloud resource (EC2, RDS, S3) and when"
                         "Searches CloudTrail logs to identify the creator, timestamp, and method",
             inputSchema={
