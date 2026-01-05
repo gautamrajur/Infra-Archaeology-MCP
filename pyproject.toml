@@ -1,0 +1,23 @@
+[project]
+name = "infra-archaeology-mcp"
+version = "0.1.0"
+description = "MCP server for infrastructure forensics and resource tracking"
+requires-python = ">= 3.10"
+dependencies = [
+    "boto3>=1.42.21",
+    "mcp>=1.25.0",
+    "python-dateutil>=2.9.0.post0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black>=25.12.0",
+    "pytest>=9.0.2",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/infra_archaeology_mcp"]

@@ -1,0 +1,11 @@
+{
+  "aws": {
+    "profile": "infra-archaeology-mcp",
+    "regions": ["us-east-1"],
+    "default_region": "us-east-1"
+  },
+  "cache": {
+    "enabled": true,
+    "ttl_seconds": 300
+  }
+}
