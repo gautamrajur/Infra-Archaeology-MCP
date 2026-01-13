@@ -7,5 +7,10 @@
   "cache": {
     "enabled": true,
     "ttl_seconds": 300
+  },
+    "terraform": {
+    "state_paths": [
+      "/Users/gautamraju/terraform-test/terraform.tfstate"
+    ]
   }
 }

@@ -6,6 +6,8 @@ from mcp.server.stdio import stdio_server
 from mcp.types import Tool, TextContent
 
 from infra_archaeology_mcp.tools.creator_lookup import who_created_resource
+from infra_archaeology_mcp.tools.terraform_lookup import what_terraform_owns_resource
+from infra_archaeology_mcp.tools.orphan_detector import find_orphaned_resources
 
 app = Server("infrastructure-archaeology")
 
@@ -36,7 +38,56 @@ async def list_tools() -> list[Tool]:
                 },
                 "required": ["resource_id", "resource_type"]
             }
-                        
+        ),
+        Tool(
+            name="what_terraform_owns_resource",
+            description="Check if AWS resource is Terraform-managed, return ownership details",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "resource_arn": {
+                        "type": "string",
+                        "description": "AWS ARN or bare resource ID (e.g., i-abc123, arn:aws:ec2:...)"
+                    },
+                    "state_sources": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "State locations: S3 URIs, local paths, or TFC paths"
+                    },
+                    "discovery_mode": {
+                        "type": "string",
+                        "enum": ["explicit", "local", "auto", "hybrid"],
+                        "default": "hybrid",
+                        "description": "How to find state files"
+                    }
+                },
+                "required": ["resource_arn"]
+            }
+        ),
+        Tool(
+            name="find_orphaned_resources",
+            description="Find AWS resources not managed by Terraform, sorted by cost",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "region": {
+                        "type": "string",
+                        "description": "AWS region to scan"
+                    },
+                    "state_sources": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "Terraform state locations (S3 URIs or local paths)"
+                    },
+                    "resource_types": {
+                        "type": "array",
+                        "items": {"type": "string", "enum": ["ec2", "rds", "s3"]},
+                        "default": ["ec2", "rds", "s3"],
+                        "description": "Resource types to scan"
+                    }
+                },
+                "required": ["region", "state_sources"]
+            }
         )
     ]
     
@@ -58,6 +109,41 @@ async def call_tools(name: str, arguments: dict) -> list[TextContent]:
                 type="text",
                 text=f"Error: {str(e)}"
             )]
+
+    if name == "what_terraform_owns_resource":
+        try:
+            result = await what_terraform_owns_resource(
+                resource_arn=arguments["resource_arn"],
+                state_sources=arguments.get("state_sources"),
+                discovery_mode=arguments.get("discovery_mode", "hybrid")
+            )
+            return [TextContent(
+                type="text",
+                text=json.dumps(result, indent=2)
+            )]
+        except Exception as e:
+            return [TextContent(
+                type="text",
+                text=f"Error: {str(e)}"
+            )]
+
+    if name == "find_orphaned_resources":
+        try:
+            result = await find_orphaned_resources(
+                region=arguments["region"],
+                state_sources=arguments["state_sources"],
+                resource_types=arguments.get("resource_types", ["ec2", "rds", "s3"])
+            )
+            return [TextContent(
+                type="text",
+                text=json.dumps(result, indent=2)
+            )]
+        except Exception as e:
+            return [TextContent(
+                type="text",
+                text=f"Error: {str(e)}"
+            )]
+
     raise ValueError(f"Unknown tool: {name}")
     
 async def main():

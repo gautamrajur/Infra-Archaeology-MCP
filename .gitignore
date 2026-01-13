@@ -1,1 +1,26 @@
-.venv
+# Virtual environment
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# Test artifacts
+.pytest_cache/
+.coverage
+
+# Local files
+test.txt
+*.log
