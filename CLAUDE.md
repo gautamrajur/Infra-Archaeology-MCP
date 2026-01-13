@@ -64,7 +64,7 @@ For Claude Desktop, add to `~/Library/Application Support/Claude/claude_desktop_
   "mcpServers": {
     "infrastructure-archaeology": {
       "command": "python",
-      "args": ["-m", "infra_archaeology.server"],
+      "args": ["-m", "infra_archaeology_mcp.server"],
       "env": {
         "AWS_PROFILE": "default",
         "AWS_DEFAULT_REGION": "us-east-1"

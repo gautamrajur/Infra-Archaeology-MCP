@@ -8,9 +8,9 @@
     "enabled": true,
     "ttl_seconds": 300
   },
-    "terraform": {
+  "terraform": {
     "state_paths": [
-      "/Users/gautamraju/terraform-test/terraform.tfstate"
+      "${TERRAFORM_STATE_PATH:-./terraform.tfstate}"
     ]
   }
 }

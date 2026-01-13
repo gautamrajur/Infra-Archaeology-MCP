@@ -1,4 +1,4 @@
-"""Tests for what_terraform_owns_resource tool"""
+"""Tests for terraform_lookup tool"""
 
 import pytest
 import json

@@ -1,6 +1,7 @@
 """Tool: find_orphaned_resources - detect AWS resources not in Terraform"""
 
 import boto3
+import aioboto3
 from datetime import datetime, timedelta
 from typing import Optional
 from infra_archaeology_mcp.terraform.state_parser import TerraformStateParser
@@ -88,10 +89,13 @@ async def _fetch_state_from_s3(s3_uri: str) -> str:
     # Parse s3://bucket/key
     parts = s3_uri.replace("s3://", "").split("/", 1)
     bucket = parts[0]
-    key = parts[1] if len(parts) > 1 else "terraform.tfstate"
+    if len(parts) < 2 or parts[1].strip() == '':
+        key = 'terraform.tfstate'
+    else:
+        key = parts[1]
 
-    s3 = boto3.client("s3")
-    response = s3.get_object(Bucket=bucket, Key=key)
+    async with aioboto3.client('s3') as s3:
+        response = await s3.get_object(Bucket=bucket, Key=key)
     return response["Body"].read().decode("utf-8")
 
 

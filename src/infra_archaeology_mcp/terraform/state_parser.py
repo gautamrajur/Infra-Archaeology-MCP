@@ -23,7 +23,7 @@ class TerraformStateParser:
         if not file_path.exists():
             raise FileNotFoundError(f"State file not found: {path}")
 
-        with open(file_path, 'r') as f:
+        with open(file_path, 'r', encoding='utf-8') as f:
             self.load_from_json(f.read())
 
     def load_from_json(self, json_str: str) -> None:
